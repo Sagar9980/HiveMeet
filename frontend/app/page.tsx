@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 
@@ -19,7 +20,7 @@ export default function Home() {
         <form className="w-full max-w-sm space-y-8">
           <div className="space-y-2">
             <label className="text-gray-300" htmlFor="chat-code">
-              Chat Code
+              Meeting Url
             </label>
             <input
               className="bg-gray-700 px-4 py-2 ml-2 text-white placeholder-gray-500"
@@ -28,18 +29,19 @@ export default function Home() {
             />
           </div>
           <div className="flex space-x-4">
-            <button
-              className="bg-blue-600 px-4 py-2 rounded-sm text-white hover:bg-blue-700"
-              type="submit"
-            >
-              Join Chat
-            </button>
-            <button
-              className="bg-gray-600 text-white px-4 py-2 rounded-sm hover:bg-gray-700"
-              type="button"
-            >
-              New Meeting
-            </button>
+            <Link href="/meeting">
+              <button className="bg-blue-600 px-4 py-2 rounded-sm text-white hover:bg-blue-700">
+                Join Meeting
+              </button>
+            </Link>
+            <Link href="/meeting">
+              <button
+                className="bg-gray-600 text-white px-4 py-2 rounded-sm hover:bg-gray-700"
+                type="button"
+              >
+                New Meeting
+              </button>
+            </Link>
           </div>
         </form>
       </div>

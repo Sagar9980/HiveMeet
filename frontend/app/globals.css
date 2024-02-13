@@ -25,3 +25,7 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+.meeting__video {
+  width: 100%; /* Adjust width as needed */
+  height: auto; /* Adjust height as needed */
+}
