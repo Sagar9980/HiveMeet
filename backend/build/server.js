@@ -25,17 +25,23 @@ app.get("/", (req, res) => {
     res.send("Express + TypeScript Server");
 });
 io.on("connection", (socket) => {
-    console.log("A user connected");
+    console.log("me", socket.id);
     // Send a welcome message to the connected client
-    socket.emit("message", "Welcome to the Socket.IO server!");
     // Listen for messages from the client
-    socket.on("chatMessage", (message) => {
+    socket.on("callUser", (data) => {
         // Broadcast the message to all connected clients
-        io.emit("message", message);
+        io.to(data.userToCall).emit("callUser", {
+            signal: data.signalData,
+            from: data.from,
+            name: data.name,
+        });
     });
     // Listen for disconnection
     socket.on("disconnect", () => {
-        console.log("A user disconnected");
+        socket.broadcast.emit("callEnded");
+    });
+    socket.on("answerCall", (data) => {
+        io.to(data.to).emit("callAccepted"), data.signal;
     });
 });
 server.listen(port, () => {

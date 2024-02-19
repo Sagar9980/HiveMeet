@@ -27,5 +27,5 @@ body {
 }
 .meeting__video {
   width: 100%; /* Adjust width as needed */
-  height: auto; /* Adjust height as needed */
+  height: 100vh; /* Adjust height as needed */
 }
