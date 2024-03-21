@@ -60,7 +60,12 @@ import { Server as SocketIOServer } from "socket.io";
 
 const app = express();
 const server = http.createServer(app);
-const io = new SocketIOServer(server);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
 interface Users {
   [key: string]: string[];
@@ -76,6 +81,7 @@ const socketToRoom: SocketToRoom = {};
 
 io.on("connection", (socket) => {
   socket.on("join room", (roomID: string) => {
+    console.log(roomID, "hello");
     if (users[roomID]) {
       const length = users[roomID].length;
       if (length === 4) {
@@ -88,7 +94,7 @@ io.on("connection", (socket) => {
     }
     socketToRoom[socket.id] = roomID;
     const usersInThisRoom = users[roomID].filter((id) => id !== socket.id);
-
+    console.log(usersInThisRoom, "users In this room");
     socket.emit("all users", usersInThisRoom);
   });
 

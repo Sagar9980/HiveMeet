@@ -54,11 +54,17 @@ const http_1 = __importDefault(require("http"));
 const socket_io_1 = require("socket.io");
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
-const io = new socket_io_1.Server(server);
+const io = new socket_io_1.Server(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+    },
+});
 const users = {};
 const socketToRoom = {};
 io.on("connection", (socket) => {
     socket.on("join room", (roomID) => {
+        console.log(roomID, "hello");
         if (users[roomID]) {
             const length = users[roomID].length;
             if (length === 4) {
@@ -72,6 +78,7 @@ io.on("connection", (socket) => {
         }
         socketToRoom[socket.id] = roomID;
         const usersInThisRoom = users[roomID].filter((id) => id !== socket.id);
+        console.log(usersInThisRoom, "users In this room");
         socket.emit("all users", usersInThisRoom);
     });
     socket.on("sending signal", (payload) => {
