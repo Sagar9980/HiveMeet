@@ -8,11 +8,10 @@ const Meeting = () => {
   const socketRef: any = useRef();
   const userVideoRef: any = useRef();
   const peersRef: any = useRef([]);
-
   useEffect(() => {
-    socketRef.current = io("http://localhost:8000");
-    navigator.mediaDevices
-      .getUserMedia({
+    socketRef.current = io("http://192.168.1.67:8000");
+    navigator?.mediaDevices
+      ?.getUserMedia({
         video: true,
       })
       .then((stream) => {
@@ -21,10 +20,9 @@ const Meeting = () => {
           socketRef.current.emit("join room", "123");
           socketRef.current.on("all users", (users: any) => {
             const peers: any = [];
-            console.log(users, "these are the users");
+            console.log(users, "users");
             users.forEach((userId: any) => {
               const peer = createPeer(userId, socketRef.current.id, stream);
-              console.log(peer, "tthis is peer");
               peersRef.current.push({
                 peerId: userId,
                 peer,
@@ -35,6 +33,7 @@ const Meeting = () => {
           });
 
           socketRef.current.on("user joined", (payload: any) => {
+            console.log(payload, "payload");
             const peer = addPeer(payload.signal, payload.callerID, stream);
             peersRef.current.push({
               peerID: payload.callerID,
@@ -47,17 +46,17 @@ const Meeting = () => {
             const item = peersRef.current.find(
               (p: any) => p.peerID === payload.id
             );
-            item.peer.signal(payload.signal);
+            item?.peer.signal(payload.signal);
           });
         }
       });
   }, []);
-  console.log(peers, "socketRef");
+
   function createPeer(userToSignal: any, callerID: any, stream: any) {
     const peer = new Peer({
       initiator: true,
       trickle: false,
-      stream,
+      stream: stream,
     });
 
     peer.on("signal", (signal) => {
@@ -105,10 +104,8 @@ const Meeting = () => {
 const Video = (props: any) => {
   const ref: any = useRef();
 
-  console.log(props, "running");
   useEffect(() => {
     props.peer.on("stream", (stream: any) => {
-      console.log(stream, "");
       ref.current.srcObject = props?.peer.streams[0];
     });
   }, []);
