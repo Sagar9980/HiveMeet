@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
+import Video from "@/components/Video";
 
 const Meeting = () => {
   const [peers, setPeers] = useState<any>([]);
@@ -20,7 +21,6 @@ const Meeting = () => {
           socketRef.current.emit("join room", "123");
           socketRef.current.on("all users", (users: any) => {
             const peers: any = [];
-            console.log(users, "users");
             users.forEach((userId: any) => {
               const peer = createPeer(userId, socketRef.current.id, stream);
               peersRef.current.push({
@@ -33,7 +33,6 @@ const Meeting = () => {
           });
 
           socketRef.current.on("user joined", (payload: any) => {
-            console.log(payload, "payload");
             const peer = addPeer(payload.signal, payload.callerID, stream);
             peersRef.current.push({
               peerID: payload.callerID,
@@ -99,18 +98,6 @@ const Meeting = () => {
       })}
     </div>
   );
-};
-
-const Video = (props: any) => {
-  const ref: any = useRef();
-
-  useEffect(() => {
-    props.peer.on("stream", (stream: any) => {
-      ref.current.srcObject = props?.peer.streams[0];
-    });
-  }, []);
-
-  return <video className="meeting__video" playsInline autoPlay ref={ref} />;
 };
 
 export default Meeting;
